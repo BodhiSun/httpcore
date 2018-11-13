@@ -1,4 +1,4 @@
-package com.bodhi.http_core;
+package com.bodhi.http;
 
 /**
  * @author : Sun

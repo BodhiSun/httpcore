@@ -1,4 +1,4 @@
-package com.bodhi.http_core.component;
+package com.bodhi.http.component;
 
 /**
  * @author : Sun
@@ -42,5 +42,14 @@ public class BaseResp {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    @Override
+    public String toString() {
+        return "BaseResp{" +
+                "message='" + message + '\'' +
+                ", status=" + status +
+                ", code=" + code +
+                '}';
     }
 }

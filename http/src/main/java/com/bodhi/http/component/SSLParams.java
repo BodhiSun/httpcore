@@ -1,4 +1,4 @@
-package com.bodhi.http_core.component;
+package com.bodhi.http.component;
 
 import java.io.IOException;
 import java.io.InputStream;

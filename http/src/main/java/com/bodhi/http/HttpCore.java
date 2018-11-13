@@ -1,4 +1,4 @@
-package com.bodhi.http_core;
+package com.bodhi.http;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,10 +7,10 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.webkit.WebSettings;
 
-import com.bodhi.http_core.component.BaseResp;
-import com.bodhi.http_core.component.ParamMap;
-import com.bodhi.http_core.component.SSLParams;
-import com.bodhi.http_core.exception.URLNullException;
+import com.bodhi.http.component.BaseResp;
+import com.bodhi.http.component.ParamMap;
+import com.bodhi.http.component.SSLParams;
+import com.bodhi.http.exception.URLNullException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -137,7 +137,7 @@ public class HttpCore implements Defines {
             public void onResponse(Call call, Response response) throws IOException {
                 if (callback != null) {
                     if (response.isSuccessful() && response.code() == 200) {
-                        String result = response.body().toString();
+                        String result = response.body().string();
                         if (TextUtils.isEmpty(result)) {
                             callback.onError(CODE_RETURN_NULL, "server return null");
                         } else {
@@ -149,7 +149,7 @@ public class HttpCore implements Defines {
                                     callback.onError(t.getCode(), t.getMessage());
                                 }
                             } catch (JsonSyntaxException jse) {
-                                callback.onError(CODE_PARSE_ERROR, "result string is " + result);
+                                callback.onError(CODE_PARSE_ERROR, "result string is " + result+"      jse:"+jse.getMessage());
                             }
                         }
                     } else {
@@ -224,7 +224,6 @@ public class HttpCore implements Defines {
                 if(callback!=null){
                     if(response.isSuccessful()&&response.code()==200){
                         String result = response.body().string();
-
                         try {
                             callback.onResult(new Gson().fromJson(result,resultClz));
                         }catch (JsonSyntaxException jse){

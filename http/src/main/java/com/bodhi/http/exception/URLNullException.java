@@ -1,4 +1,4 @@
-package com.bodhi.http_core.exception;
+package com.bodhi.http.exception;
 
 /**
  * @author : Sun

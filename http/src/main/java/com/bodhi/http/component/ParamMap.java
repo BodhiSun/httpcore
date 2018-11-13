@@ -1,8 +1,8 @@
-package com.bodhi.http_core.component;
+package com.bodhi.http.component;
 
 import android.text.TextUtils;
 
-import com.bodhi.http_core.exception.DuplicateParamException;
+import com.bodhi.http.exception.DuplicateParamException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

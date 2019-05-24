@@ -50,7 +50,7 @@ public class ParamMap {
         StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
         Iterator<Map.Entry<String, String>> it = paramMap.entrySet().iterator();
-        if (it.hasNext()) {
+        while (it.hasNext()) {
             if (isFirst) {
                 isFirst = false;
             } else {

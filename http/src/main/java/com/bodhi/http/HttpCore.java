@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.webkit.WebSettings;
 
 import com.bodhi.http.component.BaseResp;
+import com.bodhi.http.component.HttpLogger;
 import com.bodhi.http.component.ParamMap;
 import com.bodhi.http.component.SSLParams;
 import com.bodhi.http.exception.URLNullException;
@@ -25,6 +26,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.internal.Util;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * @author : Sun
@@ -53,13 +55,20 @@ public class HttpCore implements Defines {
 
     private String ua;
 
-    public void init(Context context) {
-        init(context, null);
+    public void init(Context context,boolean isInterceptor) {
+        init(context, null,isInterceptor);
     }
 
-    public void init(Context context, SSLParams sslParams) {
+    public void init(Context context, SSLParams sslParams,boolean isInterceptor) {
         this.context = context;
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+        if (isInterceptor) {
+            HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor(new HttpLogger());
+            logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(logInterceptor);
+        }
+
         builder.connectTimeout(10000L, TimeUnit.MILLISECONDS);
         builder.readTimeout(10000L, TimeUnit.MILLISECONDS);
 
@@ -292,7 +301,7 @@ public class HttpCore implements Defines {
         if (urlParamMap != null) {
             String urlParamString = urlParamMap.getUrlParamString();
             if (!TextUtils.isEmpty(urlParamString)) {
-                requestUrl.append("?").append(urlParamMap);
+                requestUrl.append("?").append(urlParamString);
             }
         }
 

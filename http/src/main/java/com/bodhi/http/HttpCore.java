@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.WebSettings;
 
 import com.bodhi.http.component.BaseResp;
@@ -15,12 +16,15 @@ import com.bodhi.http.exception.URLNullException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -44,6 +48,8 @@ public class HttpCore implements Defines {
         if (httpCore != null) {
             return httpCore;
         }
+
+
 
         httpCore = new HttpCore();
         return httpCore;
@@ -194,6 +200,56 @@ public class HttpCore implements Defines {
                     }else{
                         callback.onError(CODE_NET_ERROR,response.message());
                     }
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 上传文件
+     * @param requestUrl 接口地址
+     * @param filePath  本地文件地址
+     */
+    public void upLoadFile(String requestUrl, Map<String,String> params, String filePath, String mediaType, final HttpRequestListener<String> callback) {
+
+        //创建File
+        File file = new File(filePath);
+
+        //创建RequestBody
+        final MediaType MEDIA_OBJECT_STREAM = MediaType.parse(mediaType);
+        RequestBody body = RequestBody.create(MEDIA_OBJECT_STREAM, file);
+
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        //设置类型
+        builder.setType(MultipartBody.FORM);
+
+        //文件参数
+        builder.addFormDataPart("file", file.getName(), body);
+
+        //追加参数
+        if(params!=null&&params.size()>0){
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                builder.addFormDataPart(entry.getKey(), entry.getValue());
+            }
+        }
+
+        //创建Request
+        final Request request = new Request.Builder().url(requestUrl).post(builder.build()).build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                callback.onError(-1,e.toString());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String string = response.body().string();
+                    callback.onResult(string);
+                } else {
+                    callback.onError(response.code(),response.message());
                 }
             }
         });

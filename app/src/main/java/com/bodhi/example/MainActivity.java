@@ -1,16 +1,22 @@
 package com.bodhi.example;
 
 import android.app.AlarmManager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
+import com.bodhi.example.screenshot.ScreenShotActivity;
 import com.bodhi.http.HttpCore;
 import com.bodhi.http.HttpRequestListener;
 import com.bodhi.http.component.ParamMap;
 import com.bodhi.http.exception.DuplicateParamException;
 import com.bodhi.http.exception.URLNullException;
 import com.bodhi.http_core.R;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,8 +33,48 @@ public class MainActivity extends AppCompatActivity {
 
 //        testRequest1();
 
-        testRequest2();
+//        testRequest2();
 
+        findViewById(R.id.textView).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testUpload();
+            }
+        });
+
+    }
+
+    private void testUpload() {
+        startActivityForResult(new Intent(this, ScreenShotActivity.class),101);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==101&&resultCode==102){
+            String imagePath = data.getStringExtra("imagePath");
+            if(!TextUtils.isEmpty(imagePath)){
+                Log.e("upload","---imagePath:"+imagePath);
+
+                String url="http://122.228.113.232:9999/service/default/upload";
+                String testUrl="http://60.205.180.159:8888/service/default/upload";
+                String mediaType="image/*";
+
+                HttpCore.getInstance().upLoadFile(url,null, imagePath, mediaType, new HttpRequestListener<String>() {
+                    @Override
+                    public void onResult(String s) {
+                        Log.e("upload","---onResult s:"+s);
+
+                    }
+
+                    @Override
+                    public void onError(int errorCode, String errorMsg) {
+                        Log.e("upload","---onError  errorCode:"+errorCode+" errorMsg:"+errorMsg);
+
+                    }
+                });
+            }
+        }
     }
 
     private void testRequest2() {

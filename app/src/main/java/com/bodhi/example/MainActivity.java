@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 String testUrl="http://60.205.180.159:8888/service/default/upload";
                 String mediaType="image/*";
 
-                HttpCore.getInstance().upLoadFile(url,null, imagePath, mediaType, new HttpRequestListener<String>() {
+                HttpCore.getInstance().upLoadFile(url,null,null, imagePath, mediaType, new HttpRequestListener<String>() {
                     @Override
                     public void onResult(String s) {
                         Log.e("upload","---onResult s:"+s);
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             paramMap.param("cid","1");
             paramMap.param("q","");
 
-            HttpCore.getInstance().simpleGet("https://api.zhetaoke.com:10001/api/api_all.ashx", paramMap, new HttpRequestListener<String>() {
+            HttpCore.getInstance().simpleGet("https://api.zhetaoke.com:10001/api/api_all.ashx",null, paramMap, new HttpRequestListener<String>() {
                 @Override
                 public void onResult(String s) {
                     Log.e("aaa", "onResult   s:" + s);
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     String url = "http://localhost:8080/apiTest";
-                    HttpCore.getInstance().simpleGet(url, null, new HttpRequestListener<String>() {
+                    HttpCore.getInstance().simpleGet(url, null,null, new HttpRequestListener<String>() {
                         @Override
                         public void onResult(String s) {
                             Log.e("aaa", "onResult   s:" + s);
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     String url = "https://api.zhetaoke.com:10001/api/api_all.ashx?appkey=a0c6070d3b7d47bdb645c9342b652ab2&page=1&page_size=20&sort=new&cid=1&q=";
-                    HttpCore.getInstance().simpleGet(url, null, new HttpRequestListener<String>() {
+                    HttpCore.getInstance().simpleGet(url, null,null, new HttpRequestListener<String>() {
                         @Override
                         public void onResult(String s) {
                             Log.e("aaa", "onResult   s:" + s);

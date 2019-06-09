@@ -31,7 +31,7 @@ public class AccountManager {
             public void run() {
                 try {
                     final String url = "http://localhost:8080/HelloWorld/userinfoApi.jsp";
-                    HttpCore.getInstance().get(url, AccountResp.class, new HttpRequestListener<AccountResp>() {
+                    HttpCore.getInstance().get(url, null,AccountResp.class, new HttpRequestListener<AccountResp>() {
                         @Override
                         public void onResult(AccountResp resp) {
                             int code = resp.getCode();

@@ -26,6 +26,10 @@ public class ParamMap {
 
     private Map<String, String> paramMap = new HashMap<>();
 
+    public Map<String, String> getParamMap() {
+        return paramMap;
+    }
+
     public ParamMap param(String key, String value) throws DuplicateParamException {
         if (paramMap.containsKey(key)) {
             throw new DuplicateParamException(key);
@@ -74,6 +78,7 @@ public class ParamMap {
         boolean isFirst = true;
         List<String> keys = new ArrayList<>();
         keys.addAll(paramMap.keySet());
+        //按字母升序排列
         Collections.sort(keys, String.CASE_INSENSITIVE_ORDER);
         for (String key : keys) {
             if (isFirst) {

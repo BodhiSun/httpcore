@@ -95,40 +95,49 @@ public class HttpCore implements Defines {
         }
     }
 
-    public void get(final String url) throws URLNullException {
+    public void get(final String url,final Map<String,String> header) throws URLNullException {
         get(url, null, null, null);
     }
 
-    public void get(final String url, final ParamMap urlParamMap) throws URLNullException {
-        get(url, urlParamMap, null, null);
+    public void get(final String url,final Map<String,String> header, final ParamMap urlParamMap) throws URLNullException {
+        get(url, header,urlParamMap, null, null);
     }
 
-    public <T extends BaseResp> void get(final String url, final Class<T> resultClz, final HttpRequestListener<T> callback) throws URLNullException {
-        get(url, null, resultClz, callback);
+    public <T extends BaseResp> void get(final String url,final Map<String,String> header, final Class<T> resultClz, final HttpRequestListener<T> callback) throws URLNullException {
+        get(url, header, null,resultClz, callback);
     }
 
-    public <T extends BaseResp> void get(final String url, final ParamMap urlParamMap, final Class<T> resultClz, final HttpRequestListener<T> callback) throws URLNullException {
+    public <T extends BaseResp> void get(final String url,final Map<String,String> header, final ParamMap urlParamMap, final Class<T> resultClz, final HttpRequestListener<T> callback) throws URLNullException {
         final String requestUrl = getFinalUrl(url, urlParamMap);
         Request.Builder builder = new Request.Builder().url(requestUrl).addHeader("User-Agent", ua);
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
         request(builder.build(), resultClz, callback);
     }
 
-    public <T extends BaseResp> void post(final String url, final RequestBody body,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
-        post(url,null,body,resultClz,callback);
+    public <T extends BaseResp> void post(final String url,final Map<String,String> header, final RequestBody body,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
+        post(url,null,null,body,resultClz,callback);
     }
 
-    public <T extends BaseResp> void post(final String url,final ParamMap urlParamMap,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
-        post(url,urlParamMap,null,resultClz,callback);
+    public <T extends BaseResp> void post(final String url,final Map<String,String> header,final ParamMap urlParamMap,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
+        post(url,header,urlParamMap,null,resultClz,callback);
     }
 
-    public <T extends BaseResp> void post(final String url,final ParamMap urlParamMap,final RequestBody body ) throws URLNullException {
-        post(url,urlParamMap,body,null,null);
+    public <T extends BaseResp> void post(final String url,final Map<String,String> header,final ParamMap urlParamMap,final RequestBody body ) throws URLNullException {
+        post(url,header,urlParamMap,body,null,null);
     }
 
-    public <T extends BaseResp> void post(final String url,final ParamMap urlParamMap,final RequestBody body,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
+    public <T extends BaseResp> void post(final String url,final Map<String,String> header,final ParamMap urlParamMap,final RequestBody body,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
         String requestUrl = getFinalUrl(url, urlParamMap);
         Request.Builder builder = new Request.Builder().url(requestUrl).addHeader("User-Agent", ua);
-
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
         if(body!=null){
             builder.post(body);
         }else{
@@ -175,9 +184,14 @@ public class HttpCore implements Defines {
         });
     }
 
-    public void bitmapGet(final String url,final ParamMap urlParamMap,final HttpRequestListener<Bitmap> callback) throws URLNullException {
+    public void bitmapGet(final String url,final Map<String,String> header,final ParamMap urlParamMap,final HttpRequestListener<Bitmap> callback) throws URLNullException {
         String requestUrl = getFinalUrl(url, urlParamMap);
         Request.Builder builder = new Request.Builder().url(requestUrl).addHeader("User-Agent", ua);
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
 
         httpClient.newCall(builder.build()).enqueue(new Callback() {
             @Override
@@ -211,7 +225,7 @@ public class HttpCore implements Defines {
      * @param requestUrl 接口地址
      * @param filePath  本地文件地址
      */
-    public void upLoadFile(String requestUrl, Map<String,String> params, String filePath, String mediaType, final HttpRequestListener<String> callback) {
+    public void upLoadFile(String requestUrl,final Map<String,String> header, Map<String,String> params, String filePath, String mediaType, final HttpRequestListener<String> callback) {
 
         //创建File
         File file = new File(filePath);
@@ -235,9 +249,14 @@ public class HttpCore implements Defines {
         }
 
         //创建Request
-        final Request request = new Request.Builder().url(requestUrl).post(builder.build()).build();
+        final Request.Builder request = new Request.Builder().url(requestUrl).post(builder.build());
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                request.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
 
-        httpClient.newCall(request).enqueue(new Callback() {
+        httpClient.newCall(request.build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 callback.onError(-1,e.toString());
@@ -255,16 +274,26 @@ public class HttpCore implements Defines {
         });
     }
 
-    public <T> void anyGet(final String url,final ParamMap urlParamMap,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
+    public <T> void anyGet(final String url,final Map<String,String> header,final ParamMap urlParamMap,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
         String requestUrl = getFinalUrl(url, urlParamMap);
 
         Request.Builder builder = new Request.Builder().url(requestUrl).addHeader("User-Agent", ua);
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
         anyRequest(builder.build(),resultClz,callback);
     }
 
-    public <T> void anyPost(final String url,final ParamMap urlParamMap,final RequestBody body,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
+    public <T> void anyPost(final String url,final Map<String,String> header,final ParamMap urlParamMap,final RequestBody body,final Class<T> resultClz,final HttpRequestListener<T> callback) throws URLNullException {
         String requestUrl = getFinalUrl(url, urlParamMap);
         Request.Builder builder = new Request.Builder().url(requestUrl).addHeader("User-Agent", ua);
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
 
         if(body!=null){
             builder.post(body);
@@ -302,16 +331,26 @@ public class HttpCore implements Defines {
         });
     }
 
-    public void simpleGet(final String url,final ParamMap urlParamMap,final  HttpRequestListener<String> callback) throws URLNullException {
+    public void simpleGet(final String url,final Map<String,String> header,final ParamMap urlParamMap,final  HttpRequestListener<String> callback) throws URLNullException {
         String requestUrl = getFinalUrl(url, urlParamMap);
         Request.Builder builder = new Request.Builder().url(requestUrl).addHeader("User-Agent", ua);
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
         simpleRequest(builder.build(),callback);
 
     }
 
-    public void simplePost(final String url,final ParamMap urlParamMap,final RequestBody body,final HttpRequestListener<String> callback) throws URLNullException {
+    public void simplePost(final String url,final Map<String,String> header,final ParamMap urlParamMap,final RequestBody body,final HttpRequestListener<String> callback) throws URLNullException {
         String requestUrl = getFinalUrl(url, urlParamMap);
         Request.Builder builder = new Request.Builder().url(requestUrl).addHeader("User-Agent", ua);
+        if(header!=null){
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(),entry.getValue());
+            }
+        }
 
         if(body!=null){
             builder.post(body);

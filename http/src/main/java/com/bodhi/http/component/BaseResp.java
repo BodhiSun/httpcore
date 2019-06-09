@@ -10,7 +10,9 @@ public class BaseResp {
     private String message;
     private int status;
     private String result;
+    private String msg;
     private int code;
+
 
     public String getMessage() {
         return message == null ? "" : message;
@@ -42,6 +44,14 @@ public class BaseResp {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public String getMsg() {
+        return msg == null ? "" : msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
     @Override
